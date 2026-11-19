@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salesforce認定Platformアドミニストレーター 模擬クイズ</title>
+<style>
+  :root {
+    --primary: #0176d3;
+    --primary-hover: #014486;
+    --bg: #f3f3f3;
+    --card-bg: #ffffff;
+    --text: #181818;
+    --border: #dddbda;
+    --correct-bg: #eef4ff;
+    --correct-border: #2e844a;
+    --wrong-bg: #fef1ee;
+    --wrong-border: #ea001e;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 24px 32px;
+  }
+  header {
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  h1 {
+    font-size: 1.25rem;
+    margin: 0;
+    color: var(--primary);
+  }
+  .progress {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #555;
+  }
+  .badge {
+    display: inline-block;
+    background: #e5f3ff;
+    color: var(--primary);
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+  .question-text {
+    font-size: 1.05rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .option-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .option-item:hover {
+    background-color: #f8fbfe;
+    border-color: var(--primary);
+  }
+  .option-item input {
+    margin-top: 4px;
+    margin-right: 12px;
+    cursor: pointer;
+  }
+  .option-item.correct {
+    background-color: var(--correct-bg);
+    border-color: var(--correct-border);
+    border-width: 2px;
+  }
+  .option-item.wrong {
+    background-color: var(--wrong-bg);
+    border-color: var(--wrong-border);
+    border-width: 2px;
+  }
+  .btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn:hover {
+    background-color: var(--primary-hover);
+  }
+  .btn:disabled {
+    background-color: #c9c7c5;
+    cursor: not-allowed;
+  }
+  .explanation-box {
+    margin-top: 20px;
+    padding: 16px;
+    background-color: #f9f9fa;
+    border-left: 4px solid var(--primary);
+    border-radius: 4px;
+    display: none;
+  }
+  .result-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  .result-title.is-correct { color: var(--correct-border); }
+  .result-title.is-wrong { color: var(--wrong-border); }
+  .explanation-detail {
+    font-size: 0.92rem;
+    white-space: pre-wrap;
+    color: #333;
+  }
+  .summary-screen {
+    text-align: center;
+    padding: 20px 0;
+  }
+  .score-display {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin: 16px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="app">
+  <header>
+    <h1>SF Platformアドミニストレーター 対策クイズ</h1>
+    <div class="progress" id="progress">1 / 10</div>
+  </header>
+
+  <div id="quiz-screen">
+    <div id="multi-badge" class="badge" style="display:none;">複数選択</div>
+    <div class="question-text" id="question-text"></div>
+    <div class="options" id="options-container"></div>
+    <button class="btn" id="submit-btn" onclick="checkAnswer()">回答する</button>
+    <button class="btn" id="next-btn" onclick="nextQuestion()" style="display:none;">次の問題へ</button>
+
+    <div class="explanation-box" id="explanation-box">
+      <div class="result-title" id="result-title"></div>
+      <div class="explanation-detail" id="explanation-detail"></div>
+    </div>
+  </div>
+
+  <div id="summary-screen" class="summary-screen" style="display:none;">
+    <h2>演習完了！</h2>
+    <div class="score-display" id="score-display"></div>
+    <p id="score-message"></p>
+    <button class="btn" onclick="restartQuiz()">最初からやり直す</button>
+  </div>
+</div>
+
+<script>
+// ページ内容から抽出した問題データ（ここに追加・編集可能）
+const quizData = [
+  {
+    id: 1,
+    question: "Cloud Kicksの管理者は、特定の条件を満たすレコードを検索し、フローの後半で使用するためにそれらのレコードの値をフロー変数に保存する必要があるフローを構築しています。管理者はどのフロー要素を追加する必要がありますか？",
+    options: [
+      { key: "A", text: "割り当て" },
+      { key: "B", text: "レコードを取得" },
+      { key: "C", text: "レコードを作成" },
+      { key: "D", text: "レコードを更新" }
+    ],
+    answer: ["B"],
+    explanation: "正解: B\nレコードを取得要素は、指定した条件に一致するSalesforceレコードを検索し、そのデータを取得してフロー内の変数に保存するために使用されます。"
+  },
+  {
+    id: 2,
+    question: "Ursa Major Solarのコールセンターマネージャーは、ケースの発生源、状況、所有者ごとにドリルダウンできるケースダッシュボードをエージェントに提供したいと考えています。この要件を満たすために、管理者はダッシュボードに何を追加する必要がありますか？",
+    options: [
+      { key: "A", text: "ダッシュボードフィルター" },
+      { key: "B", text: "バケット項目" },
+      { key: "C", text: "ダッシュボードコンポーネント" },
+      { key: "D", text: "組み合わせグラフ" }
+    ],
+    answer: ["A"],
+    explanation: "正解: A\nダッシュボードフィルターを使用すると、ユーザーは動的にデータを絞り込み、発生源、状況、所有者などの条件に基づいてデータをドリルダウンして表示できるようになります。"
+  },
+  {
+    id: 3,
+    question: "Universal Containersの営業担当副社長は、営業チームのメンバーが商談の日付を過去の日付に変更できないようにしたいと考えています。この要件を満たすために、管理者は何を設定するべきですか？",
+    options: [
+      { key: "A", text: "割り当てルール" },
+      { key: "B", text: "入力規則" },
+      { key: "C", text: "項目レベルセキュリティ" },
+      { key: "D", text: "承認プロセス" }
+    ],
+    answer: ["B"],
+    explanation: "正解: B\n入力規則を使用すると、レコード保存前にデータが条件を満たしているかを検証し、商談の日付が今日より前の場合にエラーを表示して保存を防ぐことができます。"
+  },
+  {
+    id: 4,
+    question: "Universal Containers (UC) は、2時間以上オープンになっていて未割り当てのすべてのケースを緊急ケースキューに送信し、サポートマネージャーにアラートを送信したいと考えています。この要件を満たすために、管理者はどの機能を設定するべきでしょうか？",
+    options: [
+      { key: "A", text: "ケースのスケジュール済みレポート" },
+      { key: "B", text: "ケースのダッシュボード更新" },
+      { key: "C", text: "ケースのエスカレーションルール" },
+      { key: "D", text: "ケースの割り当てルール" }
+    ],
+    answer: ["C"],
+    explanation: "正解: C\nケースのエスカレーションルールは、ケースがオープンになってから一定時間が経過した場合に、自動的に他のキューへ再割り当てし、アラートを送信する機能です。"
+  },
+  {
+    id: 5,
+    question: "Cloud Kicksは、営業チームが新しいリードを追加する際に使用する画面フローを作成しました。画面フローを表示するために、管理者はどの2つのことを行うべきですか？（2つ選択）",
+    options: [
+      { key: "A", text: "タブを作成し、ページに画面フローを追加する。" },
+      { key: "B", text: "フローコンポーネントを使用し、レコードページに画面フローを追加する。" },
+      { key: "C", text: "コンソールのユーティリティバーにフローを追加する。" },
+      { key: "D", text: "AppExchangeからアプリケーションをインストールする。" }
+    ],
+    answer: ["A", "B"],
+    explanation: "正解: A, B\n画面フローはLightningページタブとしてナビゲーションに追加するか、Lightningアプリケーションビルダーのフローコンポーネントを使ってレコードページ等に配置するのが一般的です。"
+  },
+  {
+    id: 7,
+    question: "DreamHouse Realtyの管理者は、エージェントの能力とスキルセットを割り当てる簡単な方法を求めています。この要件を満たすために、管理者はどの機能を有効にするべきでしょうか？",
+    options: [
+      { key: "A", text: "ナレッジ管理" },
+      { key: "B", text: "オムニチャネル" },
+      { key: "C", text: "エスカレーションルール" },
+      { key: "D", text: "テリトリーマネジメント" }
+    ],
+    answer: ["B"],
+    explanation: "正解: B\nオムニチャネルを使用することで、エージェントの処理能力（キャパシティ）や事前定義されたスキルセットに基づいて、最適な担当者に作業を自動ルーティングできます。"
+  },
+  {
+    id: 8,
+    question: "Universal Containersには、LinkedInデータを表示するコンポーネントを含む取引先責任者のLightningレコードページがあります。このコンポーネントを営業ユーザーが携帯電話を使用している場合にのみ表示したいと考えています。（2つ選択）",
+    options: [
+      { key: "A", text: "ユーザー > プロファイル > 名前 = Sales User でコンポーネントの表示をフィルタリングする。" },
+      { key: "B", text: "フォームファクタ = 電話 でコンポーネントの表示をフィルタリングする。" },
+      { key: "C", text: "ビュー = モバイル/タブレット でコンポーネントの表示をフィルタリングする。" },
+      { key: "D", text: "ユーザー > ロール > 名前 = Sales User でコンポーネントの表示をフィルタリングする。" }
+    ],
+    answer: ["A", "B"],
+    explanation: "正解: A, B\n特定のユーザー層への表示制御にはプロファイル条件を、モバイル端末限定の表示には「フォームファクタ = 電話」の条件を組み合わせます。"
+  },
+  {
+    id: 9,
+    question: "Cloud Kicksにはshoeという名前のカスタムオブジェクトがあります。管理者は、取引先とshoeの間に関係が作成されるときに、孤立したshoeレコードができないようにするよう求められました。何をするべきですか？",
+    options: [
+      { key: "A", text: "間接参照関係を作成する" },
+      { key: "B", text: "暗号化された参照関係を作成する" },
+      { key: "C", text: "階層関係を作成する" },
+      { key: "D", text: "主従関係を作成する" }
+    ],
+    answer: ["D"],
+    explanation: "正解: D\n主従関係では、親（主）レコードが削除されると関連する子（従）レコードも自動的に削除（連鎖削除）されるため、孤立レコードを防げます。"
+  },
+  {
+    id: 10,
+    question: "営業マネージャーは、商談のフェーズに基づいて重要な値を表示するために何を実装できるかを知りたいと考えています。この要件を満たすために、管理者はどのツールを使用するべきでしょうか？",
+    options: [
+      { key: "A", text: "動的フォーム" },
+      { key: "B", text: "パスの主要項目" },
+      { key: "C", text: "商談プロセス" },
+      { key: "D", text: "ワークフロールール" }
+    ],
+    answer: ["B"],
+    explanation: "正解: B\nパス機能を使用すると、商談のフェーズ進行に沿ってステップごとに「主要な項目」と「成功へのガイダンス」を表示し、入力すべき値を視覚的に提示できます。"
+  },
+  {
+    id: 13,
+    question: "管理者は、権限セットグループが含まれる管理パッケージをインストールしました。権限セットグループのユーザーがレコードを削除できないようにするには何をするべきですか？",
+    options: [
+      { key: "A", text: "選択した権限をミュートするために、権限セットグループでミュート権限セットを使用する。" },
+      { key: "B", text: "オブジェクトの削除アクセス権の選択を解除した新しい権限セットを作成する。" },
+      { key: "C", text: "削除権限がユーザーに積み上がるのを防ぐ新しいロールを作成する。" },
+      { key: "D", text: "ユーザーのプロファイルを編集して、オブジェクトから削除アクセス権を削除する。" }
+    ],
+    answer: ["A"],
+    explanation: "正解: A\nSalesforceの権限は加算式であるため、権限セットグループ内の特定の権限だけを無効化するには「ミュート権限セット」を使用します。"
+  }
+];
+
+let currentIndex = 0;
+let score = 0;
+let isAnswered = false;
+
+function loadQuestion() {
+  isAnswered = false;
+  const current = quizData[currentIndex];
+  const isMulti = current.answer.length > 1;
+
+  document.getElementById("progress").textContent = `${currentIndex + 1} / ${quizData.length}`;
+  document.getElementById("multi-badge").style.display = isMulti ? "inline-block" : "none";
+  document.getElementById("multi-badge").textContent = `${current.answer.length}つ選択`;
+  document.getElementById("question-text").textContent = `【問${current.id}】 ${current.question}`;
+
+  const container = document.getElementById("options-container");
+  container.innerHTML = "";
+
+  current.options.forEach(opt => {
+    const label = document.createElement("label");
+    label.className = "option-item";
+    label.id = `opt-${opt.key}`;
+
+    const input = document.createElement("input");
+    input.type = isMulti ? "checkbox" : "radio";
+    input.name = "quiz-option";
+    input.value = opt.key;
+
+    const span = document.createElement("span");
+    span.textContent = `${opt.key}. ${opt.text}`;
+
+    label.appendChild(input);
+    label.appendChild(span);
+    container.appendChild(label);
+  });
+
+  document.getElementById("submit-btn").style.display = "inline-block";
+  document.getElementById("next-btn").style.display = "none";
+  document.getElementById("explanation-box").style.display = "none";
+}
+
+function checkAnswer() {
+  if (isAnswered) return;
+  const current = quizData[currentIndex];
+  const checkedInputs = Array.from(document.querySelectorAll('input[name="quiz-option"]:checked'));
+
+  if (checkedInputs.length === 0) {
+    alert("選択肢を選んでください。");
+    return;
+  }
+
+  isAnswered = true;
+  const userAnswers = checkedInputs.map(el => el.value).sort();
+  const correctAnswers = [...current.answer].sort();
+
+  const isCorrect = JSON.stringify(userAnswers) === JSON.stringify(correctAnswers);
+  if (isCorrect) score++;
+
+  // 選択肢のハイライトと無効化
+  document.querySelectorAll('input[name="quiz-option"]').forEach(input => {
+    input.disabled = true;
+    const parent = document.getElementById(`opt-${input.value}`);
+    if (correctAnswers.includes(input.value)) {
+      parent.classList.add("correct");
+    } else if (userAnswers.includes(input.value)) {
+      parent.classList.add("wrong");
+    }
+  });
+
+  // 解説表示
+  const titleEl = document.getElementById("result-title");
+  titleEl.textContent = isCorrect ? "⭕ 正解！" : "❌ 不正解...";
+  titleEl.className = "result-title " + (isCorrect ? "is-correct" : "is-wrong");
+
+  document.getElementById("explanation-detail").textContent = current.explanation;
+  document.getElementById("explanation-box").style.display = "block";
+
+  document.getElementById("submit-btn").style.display = "none";
+  const nextBtn = document.getElementById("next-btn");
+  nextBtn.textContent = currentIndex < quizData.length - 1 ? "次の問題へ" : "結果を見る";
+  nextBtn.style.display = "inline-block";
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < quizData.length) {
+    loadQuestion();
+  } else {
+    showSummary();
+  }
+}
+
+function showSummary() {
+  document.getElementById("quiz-screen").style.display = "none";
+  document.getElementById("progress").style.display = "none";
+  const summary = document.getElementById("summary-screen");
+  summary.style.display = "block";
+
+  const percentage = Math.round((score / quizData.length) * 100);
+  document.getElementById("score-display").textContent = `${score} / ${quizData.length} 問正解 (${percentage}%)`;
+  document.getElementById("score-message").textContent =
+    percentage >= 70 ? "合格ライン達成です！素晴らしい結果です。" : "もう少し！解説を見直して再挑戦しましょう。";
+}
+
+function restartQuiz() {
+  currentIndex = 0;
+  score = 0;
+  document.getElementById("summary-screen").style.display = "none";
+  document.getElementById("quiz-screen").style.display = "block";
+  document.getElementById("progress").style.display = "block";
+  loadQuestion();
+}
+
+// 初期表示
+loadQuestion();
+</script>
+
+</body>
+</html>
