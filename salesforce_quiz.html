@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Salesforce認定Platformアドミニストレーター 模擬クイズ</title>
+<title>Salesforce認定Platformアドミニストレーター 100題クイズ（2026年最新）</title>
 <style>
   :root {
     --primary: #0176d3;
@@ -11,27 +11,30 @@
     --bg: #f3f3f3;
     --card-bg: #ffffff;
     --text: #181818;
+    --muted: #5c5c5c;
     --border: #dddbda;
-    --correct-bg: #eef4ff;
-    --correct-border: #2e844a;
-    --wrong-bg: #fef1ee;
-    --wrong-border: #ea001e;
+    --sel-bg: #eef4ff;
+    --ok: #2e844a;
+    --ok-bg: #ebf7ed;
+    --ng: #ea001e;
+    --ng-bg: #fef1ee;
   }
+  * { box-sizing: border-box; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", sans-serif;
-    background-color: var(--bg);
+    background: var(--bg);
     color: var(--text);
     margin: 0;
     padding: 20px;
-    line-height: 1.6;
+    line-height: 1.65;
   }
   .container {
-    max-width: 720px;
+    max-width: 760px;
     margin: 0 auto;
     background: var(--card-bg);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    padding: 24px 32px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    padding: 24px 28px;
   }
   header {
     border-bottom: 2px solid var(--primary);
@@ -40,31 +43,46 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
   }
   h1 {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     margin: 0;
     color: var(--primary);
   }
-  .progress {
+  .top-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     font-size: 0.9rem;
     font-weight: bold;
-    color: #555;
+    color: var(--muted);
   }
+  .link-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--muted);
+    text-decoration: underline;
+    cursor: pointer;
+    font: inherit;
+  }
+  .link-btn:hover { color: var(--primary); }
   .badge {
     display: inline-block;
     background: #e5f3ff;
     color: var(--primary);
     font-size: 0.8rem;
     font-weight: bold;
-    padding: 2px 8px;
-    border-radius: 4px;
-    margin-bottom: 8px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    margin-bottom: 10px;
   }
   .question-text {
     font-size: 1.05rem;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
   .options {
     display: flex;
@@ -75,350 +93,515 @@
   .option-item {
     display: flex;
     align-items: flex-start;
-    padding: 12px 16px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: border-color 0.15s, background-color 0.15s;
+    background: #fff;
   }
   .option-item:hover {
-    background-color: #f8fbfe;
     border-color: var(--primary);
+    background: #f8fbfe;
+  }
+  .option-item.selected {
+    border-color: var(--primary);
+    background: var(--sel-bg);
   }
   .option-item input {
     margin-top: 4px;
     margin-right: 12px;
     cursor: pointer;
+    flex-shrink: 0;
   }
+  .option-body { flex: 1; min-width: 0; }
   .option-item.correct {
-    background-color: var(--correct-bg);
-    border-color: var(--correct-border);
-    border-width: 2px;
+    background: var(--ok-bg);
+    border-color: var(--ok);
   }
   .option-item.wrong {
-    background-color: var(--wrong-bg);
-    border-color: var(--wrong-border);
-    border-width: 2px;
+    background: var(--ng-bg);
+    border-color: var(--ng);
+  }
+  .opt-explanation {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(0, 0, 0, 0.15);
+    font-size: 0.9rem;
+    color: #2b2b2b;
+    display: none;
   }
   .btn {
-    background-color: var(--primary);
-    color: white;
+    background: var(--primary);
+    color: #fff;
     border: none;
-    padding: 10px 24px;
-    font-size: 1rem;
+    padding: 10px 22px;
+    font-size: 0.98rem;
     font-weight: bold;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     transition: background 0.2s;
   }
-  .btn:hover {
-    background-color: var(--primary-hover);
+  .btn:hover:not(:disabled) { background: var(--primary-hover); }
+  .btn:disabled { background: #c9c7c5; cursor: not-allowed; }
+  .btn.secondary {
+    background: #eef4ff;
+    color: var(--primary);
+    border: 1px solid var(--primary);
   }
-  .btn:disabled {
-    background-color: #c9c7c5;
-    cursor: not-allowed;
-  }
-  .explanation-box {
-    margin-top: 20px;
-    padding: 16px;
-    background-color: #f9f9fa;
-    border-left: 4px solid var(--primary);
-    border-radius: 4px;
+  .btn.secondary:hover:not(:disabled) { background: #dceaff; }
+  .banner {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: bold;
     display: none;
   }
-  .result-title {
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin-bottom: 8px;
+  .banner.ok {
+    display: block;
+    background: var(--ok-bg);
+    color: var(--ok);
+    border: 1px solid var(--ok);
   }
-  .result-title.is-correct { color: var(--correct-border); }
-  .result-title.is-wrong { color: var(--wrong-border); }
-  .explanation-detail {
-    font-size: 0.92rem;
-    white-space: pre-wrap;
-    color: #333;
+  .banner.ng {
+    display: block;
+    background: var(--ng-bg);
+    color: var(--ng);
+    border: 1px solid var(--ng);
   }
   .summary-screen {
     text-align: center;
-    padding: 20px 0;
+    padding: 16px 0;
+    display: none;
   }
   .score-display {
-    font-size: 2.5rem;
+    font-size: 2.4rem;
     font-weight: bold;
     color: var(--primary);
-    margin: 16px 0;
+    margin: 14px 0;
+  }
+  .summary-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 20px;
   }
 </style>
 </head>
 <body>
-
 <div class="container" id="app">
   <header>
-    <h1>SF Platformアドミニストレーター 対策クイズ</h1>
-    <div class="progress" id="progress">1 / 10</div>
+    <h1>SF Platformアドミニストレーター 100題クイズ</h1>
+    <div class="top-controls">
+      <span id="progress">1 / 100</span>
+      <button type="button" class="link-btn" onclick="restartQuiz()">最初から</button>
+    </div>
   </header>
 
   <div id="quiz-screen">
-    <div id="multi-badge" class="badge" style="display:none;">複数選択</div>
+    <div id="multi-badge" class="badge" style="display:none;"></div>
     <div class="question-text" id="question-text"></div>
+    <div id="result-banner" class="banner"></div>
     <div class="options" id="options-container"></div>
-    <button class="btn" id="submit-btn" onclick="checkAnswer()">回答する</button>
-    <button class="btn" id="next-btn" onclick="nextQuestion()" style="display:none;">次の問題へ</button>
-
-    <div class="explanation-box" id="explanation-box">
-      <div class="result-title" id="result-title"></div>
-      <div class="explanation-detail" id="explanation-detail"></div>
+    <div>
+      <button type="button" class="btn" id="submit-btn" onclick="checkAnswer()">回答する</button>
+      <button type="button" class="btn" id="next-btn" onclick="nextQuestion()" style="display:none;">次の問題へ</button>
     </div>
   </div>
 
-  <div id="summary-screen" class="summary-screen" style="display:none;">
+  <div id="summary-screen" class="summary-screen">
     <h2>演習完了！</h2>
     <div class="score-display" id="score-display"></div>
     <p id="score-message"></p>
-    <button class="btn" onclick="restartQuiz()">最初からやり直す</button>
+    <div class="summary-actions">
+      <button type="button" class="btn" onclick="restartQuiz()">最初からやり直す</button>
+      <button type="button" class="btn secondary" id="retry-wrong-btn" onclick="retryWrongQuestions()" style="display:none;">間違えた問題だけ復習</button>
+    </div>
   </div>
 </div>
 
 <script>
-// ページ内容から抽出した問題データ（ここに追加・編集可能）
 const quizData = [
   {
     id: 1,
     question: "Cloud Kicksの管理者は、特定の条件を満たすレコードを検索し、フローの後半で使用するためにそれらのレコードの値をフロー変数に保存する必要があるフローを構築しています。管理者はどのフロー要素を追加する必要がありますか？",
     options: [
-      { key: "A", text: "割り当て" },
-      { key: "B", text: "レコードを取得" },
-      { key: "C", text: "レコードを作成" },
-      { key: "D", text: "レコードを更新" }
+      { key: "A", text: "割り当て", exp: "割り当て要素は、フロー内の変数に値を設定または変更するために使用されます。データベースから特定の条件を満たすレコードを検索して値を取得する機能は持っていません。" },
+      { key: "B", text: "レコードを取得", exp: "正解です。レコードを取得要素は、指定した条件に一致するSalesforceレコードを検索し、そのレコードのデータを取得してフロー内の変数に保存するために使用されます。これにより、取得したデータをフローの後のステップで活用することができます。" },
+      { key: "C", text: "レコードを作成", exp: "レコードを作成要素は、フロー内の変数や値を使用して、Salesforceに新しいレコードを新規作成するために使用されます。既存のレコードを検索して値を取得する目的では使用されません。" },
+      { key: "D", text: "レコードを更新", exp: "レコードを更新要素は、フロー内で指定した値を使用して、Salesforce上の既存のレコードの項目を更新するために使用されます。条件に基づいて検索し、データを変数に格納する役割はありません。" }
     ],
-    answer: ["B"],
-    explanation: "正解: B\nレコードを取得要素は、指定した条件に一致するSalesforceレコードを検索し、そのデータを取得してフロー内の変数に保存するために使用されます。"
+    answer: ["B"]
   },
   {
     id: 2,
     question: "Ursa Major Solarのコールセンターマネージャーは、ケースの発生源、状況、所有者ごとにドリルダウンできるケースダッシュボードをエージェントに提供したいと考えています。この要件を満たすために、管理者はダッシュボードに何を追加する必要がありますか？",
     options: [
-      { key: "A", text: "ダッシュボードフィルター" },
-      { key: "B", text: "バケット項目" },
-      { key: "C", text: "ダッシュボードコンポーネント" },
-      { key: "D", text: "組み合わせグラフ" }
+      { key: "A", text: "ダッシュボードフィルター", exp: "正解です。ダッシュボードフィルターを使用すると、ユーザーは動的にデータを絞り込み、発生源、状況、所有者などの条件に基づいてデータをドリルダウンして表示できるようになります。" },
+      { key: "B", text: "バケット項目", exp: "バケット項目は、レポート内で項目の値をグループ化（バケット化）して集計するための機能であり、ダッシュボード全体での動的な絞り込みやドリルダウンを行う機能ではありません。" },
+      { key: "C", text: "ダッシュボードコンポーネント", exp: "ダッシュボードコンポーネントはグラフや表などを視覚的に表示するための要素ですが、それ単体ではユーザーが動的にデータを絞り込んでドリルダウンする機能を提供することはできません。" },
+      { key: "D", text: "組み合わせグラフ", exp: "組み合わせグラフは、2つの異なるグラフ形式（棒グラフと折れ線グラフなど）を1つのコンポーネント内で組み合わせてデータを視覚化するためのレポートグラフの形式であり、動的なフィルタリングやドリルダウンの要件を満たすものではありません。" }
     ],
-    answer: ["A"],
-    explanation: "正解: A\nダッシュボードフィルターを使用すると、ユーザーは動的にデータを絞り込み、発生源、状況、所有者などの条件に基づいてデータをドリルダウンして表示できるようになります。"
+    answer: ["A"]
   },
   {
     id: 3,
     question: "Universal Containersの営業担当副社長は、営業チームのメンバーが商談の日付を過去の日付に変更できないようにしたいと考えています。この要件を満たすために、管理者は何を設定するべきですか？",
     options: [
-      { key: "A", text: "割り当てルール" },
-      { key: "B", text: "入力規則" },
-      { key: "C", text: "項目レベルセキュリティ" },
-      { key: "D", text: "承認プロセス" }
+      { key: "A", text: "割り当てルール", exp: "割り当てルールは、リードやケースなどのレコードが作成された際に、特定の条件に基づいて自動的に担当ユーザーやキューに割り当てるための機能です。ユーザーのデータ入力内容を制限する機能ではありません。" },
+      { key: "B", text: "入力規則", exp: "正解です。入力規則を使用すると、ユーザーがレコードを保存する前に、入力されたデータが指定した条件を満たしているかを検証する数式を作成できます。この機能を利用して、商談の日付が今日より前の場合にエラーメッセージを表示させ、保存を防ぐことができます。" },
+      { key: "C", text: "項目レベルセキュリティ", exp: "項目レベルセキュリティは、ユーザーのプロファイルや権限セットに基づいて、特定の項目に対する参照アクセス権や編集アクセス権を制限する機能です。入力される値そのもの（過去の日付かどうかなど）を制御することはできません。" },
+      { key: "D", text: "承認プロセス", exp: "承認プロセスは、レコードが承認されるまでの手順を自動化する機能です。ユーザーがレコードを保存する際の入力値のエラーチェックや保存のブロックを行う要件には適していません。" }
     ],
-    answer: ["B"],
-    explanation: "正解: B\n入力規則を使用すると、レコード保存前にデータが条件を満たしているかを検証し、商談の日付が今日より前の場合にエラーを表示して保存を防ぐことができます。"
+    answer: ["B"]
   },
   {
     id: 4,
-    question: "Universal Containers (UC) は、2時間以上オープンになっていて未割り当てのすべてのケースを緊急ケースキューに送信し、サポートマネージャーにアラートを送信したいと考えています。この要件を満たすために、管理者はどの機能を設定するべきでしょうか？",
+    question: "Universal Containers (UC) の顧客から、サポートケースへの対応が遅すぎるというフィードバックが寄せられました。UCは、2時間以上オープンになっていて未割り当てのすべてのケースを緊急ケースキューに送信し、サポートマネージャーにアラートを送信したいと考えています。この要件を満たすために、管理者はどの機能を設定するべきでしょうか？",
     options: [
-      { key: "A", text: "ケースのスケジュール済みレポート" },
-      { key: "B", text: "ケースのダッシュボード更新" },
-      { key: "C", text: "ケースのエスカレーションルール" },
-      { key: "D", text: "ケースの割り当てルール" }
+      { key: "A", text: "ケースのスケジュール済みレポート", exp: "ケースのスケジュール済みレポートは、指定された日時にレポートを自動実行して指定したユーザーにメールで送信する機能です。特定の経過時間に基づいてケースの所有者を変更したり、アラートをリアルタイムで送信したりする目的には使用できません。" },
+      { key: "B", text: "ケースのダッシュボード更新", exp: "ケースのダッシュボード更新は、ダッシュボードのコンポーネントに表示されるデータをスケジュールに従って最新化する機能です。ケースの自動ルーティングやメールアラートの送信といった自動化アクションを実行することはできません。" },
+      { key: "C", text: "ケースのエスカレーションルール", exp: "正解です。ケースのエスカレーションルールは、ケースがオープンになってから一定の時間が経過した場合に、自動的にケースを他のキューやユーザーに再割り当てし、同時に特定のユーザーにメールアラートを送信する機能です。これにより、2時間経過した未割り当てのケースを緊急キューに移動させ、サポートマネージャーに通知するという要件を満たすことができます。" },
+      { key: "D", text: "ケースの割り当てルール", exp: "ケースの割り当てルールは、ケースが作成された時または編集された時に、あらかじめ定義された条件に基づいてケースを特定のユーザーまたはキューに自動的に割り当てる機能です。作成から2時間経過した時点という時間ベースのトリガーには対応していません。" }
     ],
-    answer: ["C"],
-    explanation: "正解: C\nケースのエスカレーションルールは、ケースがオープンになってから一定時間が経過した場合に、自動的に他のキューへ再割り当てし、アラートを送信する機能です。"
+    answer: ["C"]
   },
   {
     id: 5,
-    question: "Cloud Kicksは、営業チームが新しいリードを追加する際に使用する画面フローを作成しました。画面フローを表示するために、管理者はどの2つのことを行うべきですか？（2つ選択）",
+    question: "Cloud Kicksは、営業チームが新しいリードを追加する際に使用する画面フローを作成しました。この画面フローでは、名前、メールアドレス、靴の好みを収集します。画面フローを表示するために、管理者はどの2つのことを行うべきですか？2つ選択してください。",
     options: [
-      { key: "A", text: "タブを作成し、ページに画面フローを追加する。" },
-      { key: "B", text: "フローコンポーネントを使用し、レコードページに画面フローを追加する。" },
-      { key: "C", text: "コンソールのユーティリティバーにフローを追加する。" },
-      { key: "D", text: "AppExchangeからアプリケーションをインストールする。" }
+      { key: "A", text: "タブを作成し、ページに画面フローを追加する。", exp: "正解です。画面フローはLightningページタブとして作成できるため、アプリケーションのナビゲーションメニューに追加して、ユーザーが独立した画面としてフローに直接アクセスできるようにすることが可能です。" },
+      { key: "B", text: "フローコンポーネントを使用し、レコードページに画面フローを追加する。", exp: "正解です。Lightningアプリケーションビルダーを使用することで、標準のフローコンポーネントをレコードページやホームページなどにドラッグ＆ドロップで配置し、ユーザーに画面フローを表示させることができます。" },
+      { key: "C", text: "コンソールのユーティリティバーにフローを追加する。", exp: "ユーティリティバーに画面フローを追加することは技術的には可能ですが、この設問においては、AとBが画面フローを展開するためのより主要で一般的な方法として正解に設定されています。" },
+      { key: "D", text: "AppExchangeからアプリケーションをインストールする。", exp: "組織内で作成した画面フローを表示および配置する機能はSalesforceの標準機能として備わっているため、AppExchangeから追加の外部アプリケーションをインストールする必要はありません。" }
     ],
-    answer: ["A", "B"],
-    explanation: "正解: A, B\n画面フローはLightningページタブとしてナビゲーションに追加するか、Lightningアプリケーションビルダーのフローコンポーネントを使ってレコードページ等に配置するのが一般的です。"
+    answer: ["A", "B"]
+  },
+  {
+    id: 6,
+    question: "管理者は、取引先での簡単な項目更新を自動化するよう依頼されました。サポートエージェントが取引先の状況を「監査済み」に変更したとき、システムが自動的に取引先の監査日項目を今日の日付で更新するようにしたいと考えています。管理者はこの自動化を完了するためにどのツールを使用するべきでしょうか？",
+    options: [
+      { key: "A", text: "承認プロセス", exp: "承認プロセスは、レコードの承認手順を自動化するための機能です。状況の変更に伴って項目の値を自動的に更新する目的には使用されません。" },
+      { key: "B", text: "数式項目", exp: "正解です。数式項目を使用することで、状況が「監査済み」になったかどうかを数式内で評価し、自動的に今日の日付を表示させることが可能です。※ただし、実務において日付をその日のまま静的に固定（スタンプ）したい要件の場合は、日数が経過しても値が変わらないようにフロービルダーを使用するのが一般的です。" },
+      { key: "C", text: "フロービルダー", exp: "フロービルダーは、レコードが作成または更新された際に項目更新などのアクションを自動的に実行できる強力なツールです。このツールでも要件を満たすことは可能ですが、本設問の指定解答としては数式項目が選ばれています。" },
+      { key: "D", text: "入力規則", exp: "入力規則は、ユーザーがレコードを保存する際に、入力されたデータが特定の条件を満たしているかを検証し、要件を満たさない場合にエラーを表示する機能です。項目の値を自動的に更新することはできません。" }
+    ],
+    answer: ["B"]
   },
   {
     id: 7,
     question: "DreamHouse Realtyの管理者は、エージェントの能力とスキルセットを割り当てる簡単な方法を求めています。この要件を満たすために、管理者はどの機能を有効にするべきでしょうか？",
     options: [
-      { key: "A", text: "ナレッジ管理" },
-      { key: "B", text: "オムニチャネル" },
-      { key: "C", text: "エスカレーションルール" },
-      { key: "D", text: "テリトリーマネジメント" }
+      { key: "A", text: "ナレッジ管理", exp: "ナレッジ管理は、ナレッジ記事（解決策やFAQなど）の作成、共有、管理を容易にする機能です。この機能は主にナレッジベースの構築と管理に関連しており、エージェントの能力（キャパシティ）やスキルセットの割り当てを行う機能ではありません。" },
+      { key: "B", text: "オムニチャネル", exp: "正解です。オムニチャネルは、ケースやチャットなどの作業を適切なエージェントに自動的にルーティングするSalesforceの機能です。この機能を使用することで、エージェントの処理能力（キャパシティ）や事前定義されたスキルセットに基づいて、最適な担当者に作業を割り当てることが可能になります。" },
+      { key: "C", text: "エスカレーションルール", exp: "エスカレーションルールは、ケースが指定された時間内に解決されなかった場合などに、特定の条件を満たしたケースを自動的に別のユーザーやキューにエスカレート（再割り当てや通知）するために使用されます。エージェントのスキルベースのルーティングや能力管理を行うものではありません。" },
+      { key: "D", text: "テリトリーマネジメント", exp: "テリトリーマネジメントは、企業の販売地域や顧客セグメントなどの属性に基づいて、取引先や商談を適切な営業担当者に割り当てて管理する機能です。サポートエージェントの対応能力やスキルセットを管理するための機能ではありません。" }
     ],
-    answer: ["B"],
-    explanation: "正解: B\nオムニチャネルを使用することで、エージェントの処理能力（キャパシティ）や事前定義されたスキルセットに基づいて、最適な担当者に作業を自動ルーティングできます。"
+    answer: ["B"]
   },
   {
     id: 8,
-    question: "Universal Containersには、LinkedInデータを表示するコンポーネントを含む取引先責任者のLightningレコードページがあります。このコンポーネントを営業ユーザーが携帯電話を使用している場合にのみ表示したいと考えています。（2つ選択）",
+    question: "Universal Containersには、LinkedInデータを表示するコンポーネントを含む取引先責任者のLightningレコードページがあります。営業チームは、このコンポーネントを営業ユーザーが携帯電話を使用している場合にのみ表示したいと考えています。2つの回答を選択してください。",
     options: [
-      { key: "A", text: "ユーザー > プロファイル > 名前 = Sales User でコンポーネントの表示をフィルタリングする。" },
-      { key: "B", text: "フォームファクタ = 電話 でコンポーネントの表示をフィルタリングする。" },
-      { key: "C", text: "ビュー = モバイル/タブレット でコンポーネントの表示をフィルタリングする。" },
-      { key: "D", text: "ユーザー > ロール > 名前 = Sales User でコンポーネントの表示をフィルタリングする。" }
+      { key: "A", text: "ユーザー > プロファイル > 名前 = Sales User でコンポーネントの表示をフィルタリングする。", exp: "正解です。特定のユーザーグループ（この場合は営業ユーザー）にのみコンポーネントを表示させるためには、コンポーネントの表示条件をユーザーのプロファイルに基づいてフィルタリングするのが最も適切な設定方法です。" },
+      { key: "B", text: "フォームファクタ = 電話 でコンポーネントの表示をフィルタリングする。", exp: "正解です。コンポーネントを携帯電話からアクセスしたときにのみ表示させるには、デバイスの種類を示すフォームファクタを「電話」として条件に設定します。これにより、モバイルでの閲覧時のみLinkedInデータが表示されます。" },
+      { key: "C", text: "ビュー = モバイル/タブレット でコンポーネントの表示をフィルタリングする。", exp: "コンポーネントの表示条件において、「ビュー」という条件項目は存在しません。デバイスの種類に基づいて表示を制御する場合は、フォームファクタを使用する必要があります。" },
+      { key: "D", text: "ユーザー > ロール > 名前 = Sales User でコンポーネントの表示をフィルタリングする。", exp: "ロールは主にレコードへのアクセス権（共有ルールなど）を制御する階層構造のために使用されます。画面上のコンポーネントの表示やアプリケーションの権限を制御する場合は、プロファイルを使用するのがベストプラクティスです。" }
     ],
-    answer: ["A", "B"],
-    explanation: "正解: A, B\n特定のユーザー層への表示制御にはプロファイル条件を、モバイル端末限定の表示には「フォームファクタ = 電話」の条件を組み合わせます。"
+    answer: ["A", "B"]
   },
   {
     id: 9,
-    question: "Cloud Kicksにはshoeという名前のカスタムオブジェクトがあります。管理者は、取引先とshoeの間に関係が作成されるときに、孤立したshoeレコードができないようにするよう求められました。何をするべきですか？",
+    question: "Cloud Kicksにはshoeという名前のカスタムオブジェクトがあります。管理者は、取引先とshoeの間に関係が作成されるときに、孤立したshoeレコードができないようにするよう求められました。この要件を満たすために、管理者は何をするべきですか？",
     options: [
-      { key: "A", text: "間接参照関係を作成する" },
-      { key: "B", text: "暗号化された参照関係を作成する" },
-      { key: "C", text: "階層関係を作成する" },
-      { key: "D", text: "主従関係を作成する" }
+      { key: "A", text: "間接参照関係を作成する", exp: "間接参照関係は、外部データソースのオブジェクトとSalesforceのオブジェクトをリンクするために使用される関係です。親レコードが削除されたときに子レコードを自動的に削除して孤立レコードを防ぐ機能はありません。" },
+      { key: "B", text: "暗号化された参照関係を作成する", exp: "暗号化された参照関係というデータ型や機能はSalesforceには存在しません。" },
+      { key: "C", text: "階層関係を作成する", exp: "階層関係はユーザーオブジェクトでのみ使用できる特別な参照関係です。取引先とカスタムオブジェクトの間に作成することはできず、孤立レコードを防ぐ目的にも使用されません。" },
+      { key: "D", text: "主従関係を作成する", exp: "正解です。主従関係では、親（主）レコードが削除されると、関連する子（従）レコードも自動的に削除されます。この機能により、親である取引先を持たない孤立したshoeレコードが発生することを防ぐことができます。" }
     ],
-    answer: ["D"],
-    explanation: "正解: D\n主従関係では、親（主）レコードが削除されると関連する子（従）レコードも自動的に削除（連鎖削除）されるため、孤立レコードを防げます。"
+    answer: ["D"]
   },
   {
     id: 10,
     question: "営業マネージャーは、商談のフェーズに基づいて重要な値を表示するために何を実装できるかを知りたいと考えています。この要件を満たすために、管理者はどのツールを使用するべきでしょうか？",
     options: [
-      { key: "A", text: "動的フォーム" },
-      { key: "B", text: "パスの主要項目" },
-      { key: "C", text: "商談プロセス" },
-      { key: "D", text: "ワークフロールール" }
+      { key: "A", text: "動的フォーム", exp: "動的フォームは、レコードページの項目やセクションを柔軟に配置し、条件に基づいて表示および非表示を制御する機能です。この機能でも要件に近づけることは可能ですが、商談のフェーズ進行に合わせて重要な情報を視覚的に提示するための最も適した標準機能はパスです。" },
+      { key: "B", text: "パスの主要項目", exp: "正解です。パス機能を使用すると、商談などの進行状況（フェーズ）に沿って視覚的なステップを表示できます。それぞれのステップ（フェーズ）ごとに主要な項目と成功へのガイダンスを設定できるため、ユーザーは現在のフェーズで入力すべき重要な値をすぐに把握できます。" },
+      { key: "C", text: "商談プロセス", exp: "商談プロセスは、レコードタイプごとに異なる商談のフェーズの選択リスト値を制御するための機能です。画面上に重要な値を表示するための機能ではありません。" },
+      { key: "D", text: "ワークフロールール", exp: "ワークフロールールは、特定の条件を満たした際にメールアラートや項目自動更新などのアクションを実行する自動化ツールです。画面のUIに値を表示させる機能はありません。また、現在Salesforceではワークフロールールの新規作成は推奨されておらず、フローへの移行が進められています。" }
     ],
-    answer: ["B"],
-    explanation: "正解: B\nパス機能を使用すると、商談のフェーズ進行に沿ってステップごとに「主要な項目」と「成功へのガイダンス」を表示し、入力すべき値を視覚的に提示できます。"
+    answer: ["B"]
+  },
+  {
+    id: 11,
+    question: "Universal Containersの管理者は、ユーザーが新しいリードを作成するのに役立つ画面フローを持っています。リードソースが「Search Engine」の場合、管理者はユーザーに選択リストから特定の検索エンジンを選択することを要求する必要があります。リードソースが「Search Engine」ではない場合、この選択リストは非表示にする必要があります。管理者はこの要件をどのように完了するべきですか？",
+    options: [
+      { key: "A", text: "リードソースが「Search Engine」の場合のみ、ユーザーを特定の検索エンジンを保持する2番目の画面に誘導する決定要素を割り当てる。", exp: "決定要素を使用して別の画面に分岐させることは機能的には可能ですが、同じ画面内で条件付き表示を使用する方が、画面遷移を減らし、より優れたユーザー体験を提供できます。" },
+      { key: "B", text: "割り当て要素を使用し、1つはリードソースが「Search Engine」の場合、もう1つはその他のすべての場合に使用する。", exp: "割り当て要素はフロー内の変数に値を割り当てたり更新したりするために使用されるものであり、画面コンポーネントの表示・非表示を動的に制御するものではありません。" },
+      { key: "C", text: "特定の検索エンジン用の選択リストを作成し、リードソースが「Search Engine」の場合にのみ表示されるように条件付き表示を設定する。", exp: "正解です。画面フローの機能である「コンポーネントの表示設定（条件付き表示）」を使用すると、特定の条件（この場合はリードソースの値）に基づいて、同じ画面内の項目の表示・非表示をリアルタイムで制御することができます。" },
+      { key: "D", text: "特定の検索エンジン用の選択リストを設定し、入力規則を使用してリードソースが「Search Engine」の場合にのみ条件付きで表示する。", exp: "入力規則はユーザーがレコードを保存する際にデータの妥当性を検証し、条件を満たさない場合にエラーを表示するための機能です。画面上の項目の表示・非表示を制御するために使用することはできません。" }
+    ],
+    answer: ["C"]
+  },
+  {
+    id: 12,
+    question: "Universal Containersは、リセラーパートナーが購入する商品に対して割引価格を提供したいと考えています。管理者はこの要件をどのように設定するべきでしょうか？",
+    options: [
+      { key: "A", text: "商談に Partner_Discount_c 項目を追加する。", exp: "商談レベルでカスタム項目を作成して割引を計算することは可能ですが、標準の価格設定機能を活用できていません。商品の価格そのものをパートナー向けに個別に設定・管理するためのベストプラクティスではありません。" },
+      { key: "B", text: "リセラーパートナー用の個別の商品を作成する。", exp: "価格が異なるという理由だけで同じ商品に対して別の商品レコードを作成すると、商品カタログが重複し、データ管理や将来のレポート作成が非常に複雑になります。そのため、この方法は推奨されません。" },
+      { key: "C", text: "異なる商談レコードタイプを使用する。", exp: "レコードタイプは、ユーザーのプロファイルに基づいて異なるページレイアウトや選択リストの値を割り当てるために使用されます。商品の価格を制御する機能ではないため、要件を満たすことはできません。" },
+      { key: "D", text: "リセラーパートナー用に個別の価格表を作成する。", exp: "正解です。Salesforceの価格表機能を使用すると、同じ商品に対して異なる顧客セグメント（この場合はリセラーパートナーなど）向けの異なる価格を定義できます。管理者はパートナー専用の価格表を作成し、そこに割引価格を設定することで要件を最適に満たすことができます。" }
+    ],
+    answer: ["D"]
   },
   {
     id: 13,
-    question: "管理者は、権限セットグループが含まれる管理パッケージをインストールしました。権限セットグループのユーザーがレコードを削除できないようにするには何をするべきですか？",
+    question: "管理者は、権限セットグループが含まれる管理パッケージをインストールしました。インストールされた権限セットグループにはいくつかのオブジェクトに対する削除アクセス権が含まれていますが、管理者は権限セットグループのユーザーがレコードを削除できないようにする必要があります。削除アクセス権を制御するために管理者は何をするべきですか？",
     options: [
-      { key: "A", text: "選択した権限をミュートするために、権限セットグループでミュート権限セットを使用する。" },
-      { key: "B", text: "オブジェクトの削除アクセス権の選択を解除した新しい権限セットを作成する。" },
-      { key: "C", text: "削除権限がユーザーに積み上がるのを防ぐ新しいロールを作成する。" },
-      { key: "D", text: "ユーザーのプロファイルを編集して、オブジェクトから削除アクセス権を削除する。" }
+      { key: "A", text: "選択した権限をミュートするために、権限セットグループでミュート権限セットを使用する。", exp: "正解です。管理パッケージに含まれる権限セットグループ内の特定の権限（この場合は削除アクセス権）を無効化（ミュート）するには、ミュート権限セットを作成してその権限セットグループに追加するのがSalesforceにおける標準的なアプローチです。" },
+      { key: "B", text: "オブジェクトの削除アクセス権の選択を解除した新しい権限セットを作成する。", exp: "権限セットはユーザーに権限を追加するための機能であり、既存のプロファイルや他の権限セットで付与された権限を制限したり取り消したりすることはできません。" },
+      { key: "C", text: "削除権限がユーザーに積み上がるのを防ぐ新しいロールを作成する。", exp: "ロール階層はレコードレベルのアクセス権（共有ルールなど）を制御するためのものであり、オブジェクトに対するシステムレベルのCRUD権限（作成、参照、更新、削除）を制御または制限する機能ではありません。" },
+      { key: "D", text: "ユーザーのプロファイルを編集して、オブジェクトから削除アクセス権を削除する。", exp: "プロファイルから削除権限を外しても、ユーザーが権限セットグループを通じて削除権限を付与されている場合、Salesforceの権限は加算式であるため、引き続きレコードを削除できてしまいます。" }
     ],
-    answer: ["A"],
-    explanation: "正解: A\nSalesforceの権限は加算式であるため、権限セットグループ内の特定の権限だけを無効化するには「ミュート権限セット」を使用します。"
-  }
-];
-
-let currentIndex = 0;
-let score = 0;
-let isAnswered = false;
-
-function loadQuestion() {
-  isAnswered = false;
-  const current = quizData[currentIndex];
-  const isMulti = current.answer.length > 1;
-
-  document.getElementById("progress").textContent = `${currentIndex + 1} / ${quizData.length}`;
-  document.getElementById("multi-badge").style.display = isMulti ? "inline-block" : "none";
-  document.getElementById("multi-badge").textContent = `${current.answer.length}つ選択`;
-  document.getElementById("question-text").textContent = `【問${current.id}】 ${current.question}`;
-
-  const container = document.getElementById("options-container");
-  container.innerHTML = "";
-
-  current.options.forEach(opt => {
-    const label = document.createElement("label");
-    label.className = "option-item";
-    label.id = `opt-${opt.key}`;
-
-    const input = document.createElement("input");
-    input.type = isMulti ? "checkbox" : "radio";
-    input.name = "quiz-option";
-    input.value = opt.key;
-
-    const span = document.createElement("span");
-    span.textContent = `${opt.key}. ${opt.text}`;
-
-    label.appendChild(input);
-    label.appendChild(span);
-    container.appendChild(label);
-  });
-
-  document.getElementById("submit-btn").style.display = "inline-block";
-  document.getElementById("next-btn").style.display = "none";
-  document.getElementById("explanation-box").style.display = "none";
-}
-
-function checkAnswer() {
-  if (isAnswered) return;
-  const current = quizData[currentIndex];
-  const checkedInputs = Array.from(document.querySelectorAll('input[name="quiz-option"]:checked'));
-
-  if (checkedInputs.length === 0) {
-    alert("選択肢を選んでください。");
-    return;
-  }
-
-  isAnswered = true;
-  const userAnswers = checkedInputs.map(el => el.value).sort();
-  const correctAnswers = [...current.answer].sort();
-
-  const isCorrect = JSON.stringify(userAnswers) === JSON.stringify(correctAnswers);
-  if (isCorrect) score++;
-
-  // 選択肢のハイライトと無効化
-  document.querySelectorAll('input[name="quiz-option"]').forEach(input => {
-    input.disabled = true;
-    const parent = document.getElementById(`opt-${input.value}`);
-    if (correctAnswers.includes(input.value)) {
-      parent.classList.add("correct");
-    } else if (userAnswers.includes(input.value)) {
-      parent.classList.add("wrong");
-    }
-  });
-
-  // 解説表示
-  const titleEl = document.getElementById("result-title");
-  titleEl.textContent = isCorrect ? "⭕ 正解！" : "❌ 不正解...";
-  titleEl.className = "result-title " + (isCorrect ? "is-correct" : "is-wrong");
-
-  document.getElementById("explanation-detail").textContent = current.explanation;
-  document.getElementById("explanation-box").style.display = "block";
-
-  document.getElementById("submit-btn").style.display = "none";
-  const nextBtn = document.getElementById("next-btn");
-  nextBtn.textContent = currentIndex < quizData.length - 1 ? "次の問題へ" : "結果を見る";
-  nextBtn.style.display = "inline-block";
-}
-
-function nextQuestion() {
-  currentIndex++;
-  if (currentIndex < quizData.length) {
-    loadQuestion();
-  } else {
-    showSummary();
-  }
-}
-
-function showSummary() {
-  document.getElementById("quiz-screen").style.display = "none";
-  document.getElementById("progress").style.display = "none";
-  const summary = document.getElementById("summary-screen");
-  summary.style.display = "block";
-
-  const percentage = Math.round((score / quizData.length) * 100);
-  document.getElementById("score-display").textContent = `${score} / ${quizData.length} 問正解 (${percentage}%)`;
-  document.getElementById("score-message").textContent =
-    percentage >= 70 ? "合格ライン達成です！素晴らしい結果です。" : "もう少し！解説を見直して再挑戦しましょう。";
-}
-
-function restartQuiz() {
-  currentIndex = 0;
-  score = 0;
-  document.getElementById("summary-screen").style.display = "none";
-  document.getElementById("quiz-screen").style.display = "block";
-  document.getElementById("progress").style.display = "block";
-  loadQuestion();
-}
-
-// 初期表示
-loadQuestion();
-</script>
-
-</body>
-</html>
+    answer: ["A"]
+  },
+  {
+    id: 14,
+    question: "Cloud Kicksは、顧客が公開ホームページを訪問中に自分自身のケースを作成できるようにしたいと考えています。管理者は何を推奨するべきですか？",
+    options: [
+      { key: "A", text: "SMS応答", exp: "SMS応答は、顧客とSMS（テキストメッセージ）を通じてコミュニケーションをとるための機能であり、公開ホームページから直接ケースを作成する要件を満たすものではありません。" },
+      { key: "B", text: "Web-to-Case", exp: "正解です。Web-to-Caseは、Webサイト上に設置されたお問い合わせフォームなどの入力内容をSalesforceに直接送信し、自動的にケースレコードを作成する機能です。これにより、顧客はホームページを訪問中に自分自身でケースを作成できるようになります。" },
+      { key: "C", text: "Email-to-Case", exp: "Email-to-Caseは、顧客から指定のサポートアドレス宛に送信されたメールを自動的にSalesforceのケースとして取り込む機能です。ホームページから直接ケースを作成するインターフェースを提供するものではありません。" },
+      { key: "D", text: "オムニチャネル", exp: "オムニチャネルは、作成されたケースやチャットリクエストなどの作業を、サポートエージェントのスキルや現在の対応状況に基づいて自動的に適切な担当者へルーティングする機能です。顧客がケースを作成するための入力フォームとしての機能は持ち合わせていません。" }
+    ],
+    answer: ["B"]
+  },
+  {
+    id: 15,
+    question: "Ursa Major Solarの管理者は、外部の会計システムに情報を送信する必要があります。これを達成するために、管理者はどのワークフローアクションを使用するべきでしょうか？",
+    options: [
+      { key: "A", text: "ToDoを割り当て", exp: "ToDoを割り当てアクションは、Salesforce内のユーザーまたはロールに対して新しいToDoを作成し、作業を割り当てるための機能です。外部システムへの情報送信には使用されません。" },
+      { key: "B", text: "アウトバウンドメッセージ", exp: "正解です。アウトバウンドメッセージは、指定された外部サービスのエンドポイントに対してSOAP APIを介してXML形式のメッセージを送信する機能です。これにより、Salesforce内の情報を外部の会計システムなどに安全に送信することが可能になります。" },
+      { key: "C", text: "レコードを作成", exp: "レコードを作成アクションは、フローやプロセスビルダーなどの自動化ツールを使用して、Salesforce内に新しいレコードを新規作成するための機能です。外部のシステムにデータを送信する目的には使用されません。" },
+      { key: "D", text: "カスタム通知", exp: "カスタム通知は、Salesforceのデスクトップ画面やモバイルアプリケーション上で、特定のユーザーまたはグループに対してプッシュ通知を送信する機能です。外部システムと連携して情報を送信する機能ではありません。" }
+    ],
+    answer: ["B"]
+  },
+  {
+    id: 16,
+    question: "Northern Trail Outfittersの営業担当者は、商談の確度項目の値を変更する方法を求めています。この要望を満たすために、管理者は何を提案するべきですか？",
+    options: [
+      { key: "A", text: "新しいフェーズの選択リスト値を定義する。", exp: "フェーズと確度は連動して自動入力されますが、新しいフェーズ値を作成することは、ユーザーが任意の確度の値を直接手動で変更できるようにする解決策ではありません。" },
+      { key: "B", text: "商談にカスタム項目を作成する。", exp: "Salesforceにはすでに標準の確度項目が存在します。標準の項目設定を変更することで要件を満たすことができるため、新しいカスタム項目を別途作成する必要はありません。" },
+      { key: "C", text: "売上予測のサポートを設定する。", exp: "売上予測機能は、営業チームの目標や将来の売上を予測および管理するためのものです。商談レコード上の確度項目の編集権限を制御するものではありません。" },
+      { key: "D", text: "ページレイアウトで項目を編集可能にする。", exp: "正解です。商談の確度はフェーズに基づいて自動入力されますが、ページレイアウト上で確度項目を編集可能（読み取り専用ではない状態）に設定することで、営業担当者が自動入力された値を手動で上書き変更できるようになります。" }
+    ],
+    answer: ["D"]
+  },
+  {
+    id: 17,
+    question: "Northern Trail Outfittersは、Salesforceにリードを入力するためにインターンを雇い、これらの新しいレコードを既存のリードと区別する方法を要求しました。この要件を満たすために、管理者はどのアプローチを取るべきでしょうか？",
+    options: [
+      { key: "A", text: "別のリード用Lightningアプリケーションを作成する。", exp: "Lightningアプリケーションはユーザーがアクセスするタブやブランディングなどをまとめるためのものですが、作成されたレコード自体を既存のデータと区別したり分類したりするための機能ではありません。" },
+      { key: "B", text: "レコードタイプを定義し、それをインターンに割り当てる。", exp: "正解です。レコードタイプを使用すると、特定のユーザープロファイルに対して異なるビジネスプロセス、ページレイアウト、選択リストの値を提供できます。インターン専用のレコードタイプを作成してプロファイルに割り当てることで、彼らが作成した新しいリードを既存のものと明確に区別して管理することができます。" },
+      { key: "C", text: "インターンが使用するためのWeb-to-リードを設定する。", exp: "Web-to-リードは、自社のWebサイトのフォームから入力された情報を自動的にSalesforceのリードとして取り込むための機能です。社内でインターンが手動でレコードを入力する作業を管理・区別する目的には適していません。" },
+      { key: "D", text: "有効なリードの割り当てルールを更新する。", exp: "割り当てルールは、作成されたリードを特定の条件に基づいて適切な所有者（ユーザーやキュー）に自動的に割り当てる機能です。インターンが作成したレコードをシステム上で既存のレコードと区別するための根本的な解決策ではありません。" }
+    ],
+    answer: ["B"]
+  },
+  {
+    id: 18,
+    question: "Cloud Kicksの管理者は、メールまたはWeb経由で作成されたすべてのケースを自動ケースキューに送信する割り当てルールを作成します。手動で作成されたケースは作成したエージェントが所有する必要がありますが、手動で作成されたケースの所有者が管理者として表示されるようになりました。管理者がこの問題をトラブルシューティングする際、何を発見するでしょうか？",
+    options: [
+      { key: "A", text: "ケース作成時にエスカレーションルールがケースの所有者を変更している。", exp: "エスカレーションルールは、ケースが一定時間解決されない場合など、特定の時間ベースの条件を満たした後にアクションをトリガーし、レコードをエスカレートさせる機能です。ケースが手動で作成された瞬間に直ちに所有者を変更する主な原因ではありません。" },
+      { key: "B", text: "割り当てルールのチェックボックスがデフォルトで選択されている。", exp: "正解です。ページレイアウトのプロパティで「割り当てルールのチェックボックス」がデフォルトで選択されるように設定されている場合、ユーザーが手動でケースを作成した際にも自動的に割り当てルールが実行されます。このケースがどのルールの条件にも一致しない場合、組織のデフォルトのケース所有者（この場合は管理者）に割り当てられることになります。" },
+      { key: "C", text: "別のアクティブな割り当てルールが管理者に所有権を与えている。", exp: "Salesforceでは、一度に有効にできるケースの割り当てルールは1つだけです。したがって、別のルールが同時に裏で実行されて所有権を与えているという状況は起こり得ません。" },
+      { key: "D", text: "Webフォームとメールテンプレートに所有者項目が欠落している。", exp: "Web-to-Case（Webフォーム）やEmail-to-Caseにおいて、所有者はフォーム上の項目ではなく、割り当てルールやデフォルトのケース所有者設定によって決定されます。また、この問題は「手動で作成されたケース」に関するものであるため、Webフォームやメールテンプレートの設定は関係ありません。" }
+    ],
+    answer: ["B"]
+  },
+  {
+    id: 19,
+    question: "Cloud Kicksの管理者は、処理時間を短縮するために、リードが作成されたときに簡単な項目更新を行う2つの古いワークフロールールを置き換えるよう依頼されました。管理者はワークフロールールを置き換えるためにどのツールを使用するべきでしょうか？",
+    options: [
+      { key: "A", text: "クイックアクションフロー", exp: "クイックアクションフローは、ユーザーがアクションボタンをクリックした際に手動で呼び出して実行するフローです。レコード作成時にバックグラウンドで自動的に処理を実行する目的には適していません。" },
+      { key: "B", text: "保存前フロー", exp: "正解です。保存前フロー（レコードトリガーフローの高速項目更新）は、レコードがデータベースに保存される前に実行されます。そのため処理速度が非常に速く、同一レコード内の単純な項目更新を行う古いワークフロールールを置き換え、システムのパフォーマンスを向上させるのに最適なツールです。" },
+      { key: "C", text: "スケジュールされたフロー", exp: "スケジュールされたフローは、指定した日時に1回のみ、または定期的に実行されるフローです。リードが作成されたというイベントをトリガーにして即座に実行するものではありません。" },
+      { key: "D", text: "画面フロー", exp: "画面フローは、ユーザーに画面を表示して情報の入力を求めたり、ウィザード形式でプロセスを案内したりするためのフローです。ユーザーの介入なしにバックグラウンドで自動的に項目を更新する要件には使用されません。" }
+    ],
+    answer: ["B"]
+  },
+  {
+    id: 20,
+    question: "Northern Trail Outfittersのマーケティングディレクターは、リード状況項目を評価済みにマークするためには、予算項目が入力されている必要があると要求しています。管理者はこの要件を満たすためにどのツールを使用するべきですか？",
+    options: [
+      { key: "A", text: "リードの取引開始", exp: "リードの取引開始は、有望なリードを取引先、取引先責任者、および商談に変換するプロセスです。特定の条件に基づいて別の項目の入力を強制するためのツールではありません。" },
+      { key: "B", text: "必須項目", exp: "ページレイアウトや項目の設定で必須項目に指定すると、レコードを作成または編集する際に常にその項目への入力が求められます。今回のように「リード状況が特定の値になった場合のみ必須にする」という条件付きの制御を行うことはできません。" },
+      { key: "C", text: "ワークフロールール", exp: "ワークフロールールは、特定の条件が満たされたときにメールアラート、ToDoの割り当て、項目自動更新などのアクションを自動実行する機能です。ユーザーの入力を検証してエラーを表示し、保存をブロックする目的には使用できません。" },
+      { key: "D", text: "入力規則", exp: "正解です。入力規則を使用すると、ユーザーがレコードを保存する前にデータが特定の条件を満たしているかを数式で検証できます。「リード状況が評価済みであり、かつ予算項目が空白である」という条件を設定することで、要件を満たさない保存をブロックし、ユーザーにエラーメッセージを表示して入力を促すことができます。" }
+    ],
+    answer: ["D"]
+  },
+  {
+    id: 21,
+    question: "Cloud Kicksの管理者は、カスタム項目を持つ新しいカスタムオブジェクトへのアクセス権を複数のユーザーに付与する必要があります。この要件を満たすために、管理者が使用すべき2つのオプションはどれですか？2つの回答を選択してください。",
+    options: [
+      { key: "A", text: "手動共有リストに追加する", exp: "手動共有は、特定のレコードに対するアクセス権（レコードレベルのセキュリティ）を他のユーザーと共有するための機能です。オブジェクトそのものやカスタム項目に対するアクセス権限（作成、参照、編集、削除など）を付与する機能ではありません。" },
+      { key: "B", text: "権限セットグループをユーザーに割り当てる", exp: "正解です。権限セットグループを使用すると、複数の権限セットをまとめてグループ化し、ユーザーに割り当てることができます。これにより、カスタムオブジェクトとカスタム項目へのアクセス権を含む権限を、複数のユーザーに対して効率的に一括付与することが可能になります。" },
+      { key: "C", text: "権限セットを作成する", exp: "正解です。権限セットを作成し、そこに新しいカスタムオブジェクトや項目へのアクセス権を設定することで、既存のプロファイルを変更することなく、必要なユーザーにのみ追加の権限を付与することができます。" },
+      { key: "D", text: "組織の共有設定を編集する", exp: "組織の共有設定は、ユーザーがシステム内のレコードに対して持つベースラインのアクセス権（公開、非公開など）を定義するものです。ユーザーに対してオブジェクトそのものや項目の権限（プロファイルや権限セットで制御するもの）を付与するためには使用されません。" }
+    ],
+    answer: ["B", "C"]
+  },
+  {
+    id: 22,
+    question: "Northern Trail Outfittersは、すべての成約した商談の平均フェーズ期間を知りたいと考えています。管理者はこの要件をどのようにサポートするべきですか？",
+    options: [
+      { key: "A", text: "プロセスビルダーを使用して、各商談の1日の平均をキャプチャする。", exp: "プロセスビルダーは、レコードが作成または更新されたときにアクションを自動実行するための機能です。商談のフェーズ期間の計算や過去の履歴データを追跡する目的には適していません。" },
+      { key: "B", text: "各商談のフェーズを追跡するための数式項目を追加する。", exp: "数式項目を使用して特定のフェーズの経過日数を個別に計算することは可能ですが、すべてのフェーズの平均期間を一覧で確認したい場合、標準のレポート機能を使用する方が効率的であり、複雑な項目の追加は不要です。" },
+      { key: "C", text: "商談フェーズ期間レポートを実行する。", exp: "正解です。Salesforceには、商談のフェーズごとの滞在日数を追跡する「商談フェーズ履歴」レポートなどの標準機能が用意されています。このレポートを使用することで、各フェーズの期間の平均を簡単に集計して表示することができます。" },
+      { key: "D", text: "成約した商談の週次レポートスナップショットを更新する。", exp: "レポートスナップショットは、パイプラインの推移など、特定の時点におけるデータの状態を定期的に保存するために使用されます。単にフェーズの平均期間を計算して表示するための機能ではありません。" }
+    ],
+    answer: ["C"]
+  },
+  {
+    id: 23,
+    question: "Northern Trail Outfittersの管理者は、割り当てられたライセンスと権限セットを追跡するためにスプレッドシートを使用してきました。Salesforce内でこれを追跡するために使用できる機能はどれですか？",
+    options: [
+      { key: "A", text: "ログイン履歴", exp: "ログイン履歴は、ユーザーのログインの成功や失敗、ログイン日時、アクセス元のIPアドレスなどを追跡するための機能です。ライセンスや権限セットの割り当て状況を確認するためのものではありません。" },
+      { key: "B", text: "Lightning利用状況アプリケーション", exp: "Lightning利用状況アプリケーションは、組織内のユーザーがどの程度Lightning Experienceを活用しているか、またはページのパフォーマンスやアクティブユーザー数などを監視するためのアプリケーションです。個々のライセンスや権限セットの割り当て状況の追跡には適していません。" },
+      { key: "C", text: "ユーザーレポート", exp: "正解です。ユーザーに関する標準のレポートタイプを使用してユーザーレポートを作成することで、各ユーザーに割り当てられているプロファイル、ライセンス、権限セットなどの情報を一覧で抽出し、Salesforce上で効率的に管理および追跡することが可能です。" },
+      { key: "D", text: "権限セットグループ", exp: "権限セットグループは、複数の関連する権限セットを一つにまとめてユーザーへの割り当てプロセスを簡素化するための機能です。割り当て作業を効率化するものであり、組織全体の割り当て状況を一覧で追跡するための分析ツールではありません。" }
+    ],
+    answer: ["C"]
+  },
+  {
+    id: 24,
+    question: "Northern Trail Outfittersには、新しい取引先が作成されたときに項目の値を自動的に設定する新しいフローがあります。そのフローはプロセスによって起動されますが、正常に動作していません。問題を特定するために、管理者は何を行うべきでしょうか？",
+    options: [
+      { key: "A", text: "フロービルダーの標準デバッグ機能を使用する。", exp: "正解です。フロービルダーに組み込まれているデバッグ機能を使用すると、フローの実行をシミュレートし、変数への値の割り当てや各要素での動作を詳細に確認できるため、フローのエラーや予期しない動作の原因を特定するのに最適です。" },
+      { key: "B", text: "ログインレベルでデバッグログを確認する。", exp: "デバッグログはシステム全体で発生したイベントを記録するものですが、フロー自体の詳細なステップや変数の状態をトラブルシューティングする場合、フロービルダーの標準デバッグ機能を使用する方が直感的で効率的です。" },
+      { key: "C", text: "設定変更履歴を表示してエラーを確認する。", exp: "設定変更履歴は、組織の設定に対して誰がいつどのような変更を加えたかを追跡するための機能です。プロセスやフローの実行時エラーを記録・特定するための機能ではありません。" },
+      { key: "D", text: "メールログを設定し、送信エラーログを確認する。", exp: "メールログはSalesforceから送信されたメールの履歴や配信ステータスを追跡するためのものです。このシナリオにおけるフローの動作不良や項目の値の自動設定に関する問題の特定には関係ありません。" }
+    ],
+    answer: ["A"]
+  },
+  {
+    id: 25,
+    question: "Cloud Kicksで商談が交渉フェーズに達すると、営業ユーザーには金額項目が必須になります。営業マネージャーは、金額がわからなくても商談をこのフェーズに移行できる必要があります。管理者は、営業ユーザーには交渉フェーズ中にこの項目を必須にし、マネージャーには変更を許可するために、どのように設定するべきですか？",
+    options: [
+      { key: "A", text: "すべてのユーザーに対して項目を必須にする。", exp: "ページレイアウトや項目レベルセキュリティなどで項目を必須に設定すると、営業マネージャーを含めたすべてのユーザーに対して必須となってしまいます。これではマネージャーが金額なしでフェーズを移行できるようにするという要件を満たすことができません。" },
+      { key: "B", text: "マネージャーのために項目に入力する数式項目を作成する。", exp: "数式項目は他の項目の値に基づいて自動計算される読み取り専用の項目です。特定のフェーズでユーザーに入力を義務付けたり、プロファイルによって必須かどうかを動的に切り替えたりする目的には使用できません。" },
+      { key: "C", text: "マネージャーに管理者プロファイルを割り当てる。", exp: "マネージャーにシステム管理者プロファイルを割り当てると、システムのすべての設定やすべてのデータへのアクセス権限を不必要に付与することになります。これはセキュリティの観点や最小特権の原則に反するため、不適切です。" },
+      { key: "D", text: "条件を満たす入力規則を設定する。", exp: "正解です。入力規則を使用することで、商談のフェーズが交渉であり、金額項目が空白であり、かつ操作しているユーザーのプロファイル（またはロール）が営業ユーザーである場合にのみエラーを表示させるという柔軟な条件を設定できます。これにより、営業マネージャーは制限を受けずに金額なしでフェーズを移行することが可能になります。" }
+    ],
+    answer: ["D"]
+  },
+  {
+    id: 26,
+    question: "Cloud Kicksは、ケースが7日以上オープンのままになっている場合、ケースの所有者を変更する必要があります。管理者はこの要件をどのように完了するべきですか？",
+    options: [
+      { key: "A", text: "自動レスポンスルール", exp: "自動レスポンスルールは、Web-to-ケースなどでケースが作成された際に、送信者に対して自動的にメールを返信するための機能です。一定時間が経過した後に所有者を変更する目的には使用されません。" },
+      { key: "B", text: "入力規則", exp: "入力規則は、ユーザーがレコードを保存する前に、入力されたデータが特定の条件を満たしているかを検証する機能です。条件に応じて自動的にレコードの所有者を変更することはできません。" },
+      { key: "C", text: "エスカレーションルール", exp: "正解です。エスカレーションルールは、ケースが一定時間（この場合は7日間）オープンのままになっているなど、指定した条件と時間が経過した際に、ケースを他のユーザーやキューに自動的に再割り当て（所有者の変更）したり、通知を送信したりするために使用されます。" },
+      { key: "D", text: "割り当てルール", exp: "割り当てルールは、リードやケースが新規作成された時点で、指定した条件に基づいて自動的に所有者（ユーザーやキュー）を割り当てるための機能です。作成から一定日数が経過した後に所有者を変更する機能ではありません。" }
+    ],
+    answer: ["C"]
+  },
+  {
+    id: 27,
+    question: "Ursa Major Solarのサービスマネージャーは、顧客からのケースをメールおよびWebサイト経由で受け取ったことを顧客に知らせたいと考えています。中優先度および高優先度のケースでは、低優先度のケースとは異なるメール通知を受信する必要があります。管理者はこの目的のために3つのメールテンプレートを作成しました。管理者はこの要件をどのように設定するべきですか？",
+    options: [
+      { key: "A", text: "ケースが作成されたときに起動する3つの割り当てルールを含める。ケースの優先度の検索条件を追加する。各ルールに適切なメールテンプレートを選択する。", exp: "割り当てルールは、ケースやリードの担当者（所有者やキュー）を自動的に割り当てるための機能です。顧客への受付完了メールを送信するための主要な機能ではありません。" },
+      { key: "B", text: "3つの自動応答ルールを追加する。各ルールに1つのルールエントリ条件を設定し、ケースの優先度の検索条件を設定する。各ルールエントリに適切なメールテンプレートを選択する。", exp: "Salesforceの仕様上、1つのオブジェクト（ここではケース）に対して同時に有効にできる自動応答ルールは1つだけです。そのため、3つの別々のルールを作成して同時に稼働させることはできません。" },
+      { key: "C", text: "ケースが作成されたときに起動する1つのワークフロールールを設定する。ケースの優先度の検索条件を追加する。ルールに適切なメールテンプレートを選択する。", exp: "ワークフロールールを使用してメールアラートを送信することは可能ですが、1つのルール内で条件（優先度）によって3つの異なるメールテンプレートを動的に出し分けることはできません。3つの異なるワークフロールールを作成する必要があります。また、Web-to-ケースやEmail-to-ケースの顧客への自動返信には、自動応答ルールを使用するのがベストプラクティスです。" },
+      { key: "D", text: "1つの自動応答ルールを作成する。3つのルールエントリ条件を設定し、ケースの優先度の検索条件を設定する。各ルールエントリに適切なメールテンプレートを選択する。", exp: "正解です。同時に有効にできる自動応答ルールは1つですが、その1つのルール内に複数の「ルールエントリ」を作成し、評価順序を指定することができます。優先度ごとに3つのエントリ条件を設定し、それぞれに異なるメールテンプレートを割り当てることで、要件を満たすことができます。" }
+    ],
+    answer: ["D"]
+  },
+  {
+    id: 28,
+    question: "管理者はNorthern Trail Outfittersの10人の新入社員のために新しいユーザーを作成しました。これらのユーザーがSalesforce組織の取引先オブジェクトにアクセスできないのはなぜですか？",
+    options: [
+      { key: "A", text: "ユーザーのプロファイルには取引先の共有ルールが必要です。", exp: "共有ルールは、組織の共有設定を拡張して、特定のレコードに対するアクセス権を他のユーザーに付与するために使用されます。オブジェクトそのものへのアクセス権を付与する機能ではないため、オブジェクトにアクセスできない理由にはなりません。" },
+      { key: "B", text: "ユーザーのプロファイルには取引先オブジェクトへの権限が必要です。", exp: "正解です。Salesforceでは、ユーザーが特定のオブジェクト（タブの表示やレコードの作成、参照、編集など）にアクセスするためには、まずそのユーザーに割り当てられたプロファイルまたは権限セットにおいて、該当オブジェクトに対するアクセス権限が付与されている必要があります。" },
+      { key: "C", text: "ユーザーのロールがロール階層の下位にあります。", exp: "ロール階層は、下位のユーザーが所有するレコードへのアクセス権を上位のロールのユーザーに付与するためのレコードレベルのセキュリティ機能です。階層の低い高いに関わらず、オブジェクト自体へのアクセス可否を決定するものではありません。" },
+      { key: "D", text: "組織の共有設定が非公開に設定されています。", exp: "組織の共有設定が非公開に設定されていても、プロファイルにオブジェクト権限があれば、ユーザーは少なくとも自分が所有するレコードにはアクセスできます。オブジェクト自体にまったくアクセスできないという状況は、組織の共有設定ではなくプロファイルの権限不足が原因です。" }
+    ],
+    answer: ["B"]
+  },
+  {
+    id: 29,
+    question: "Ursa Major Solarは、クロスセルの商談タイプの取引が減少していることに気づき、すべてのクロスセルの商談を組織内の専門家チームと共有したいと考えています。同社にはさまざまなロールがあり、商談の組織の共有デフォルトは非公開に設定されています。管理者はこれをどのように達成するべきですか？",
+    options: [
+      { key: "A", text: "専門家を公開グループに追加し、条件に基づく共有ルールを使用してレコードへのアクセス権を付与する。", exp: "正解です。特定の条件（この場合は商談タイプがクロスセルであること）を満たすレコードを特定のユーザーグループに自動的に共有するには、条件に基づく共有ルールを使用するのが最も適切で効率的な方法です。チームを公開グループにまとめることで管理も容易になります。" },
+      { key: "B", text: "商談の組織の共有デフォルトを非公開から公開・参照/更新可能に変更し、専門家のアクセス権を公開する。", exp: "組織の共有デフォルトを公開に変更してしまうと、専門家チームだけでなく、組織内のすべてのユーザーがすべての商談レコードに対してアクセス権を持つことになります。データへのアクセスは必要最小限に留めるべきであるため、この方法は不適切です。" },
+      { key: "C", text: "テリトリーマネジメントを有効にし、専門家を同じテリトリーに割り当てて、手動共有でレコードへのアクセス権を付与する。", exp: "エンタープライズテリトリーマネジメントは、企業の複雑な販売地域や顧客セグメントに基づいてアクセス権を管理する機能です。特定の商談タイプを共有するだけのために導入するのは過剰な設定であり、さらに手動共有ではレコードが作成されるたびに手作業が発生するため要件に適していません。" },
+      { key: "D", text: "専門家用の新しいロールを作成し、所有者に基づく共有ルールでレコードへのアクセス権を付与する。", exp: "今回の要件は特定のレコード所有者のデータを共有することではなく、特定の項目値（商談タイプがクロスセル）を持つデータを共有することです。したがって、所有者に基づく共有ルールではこの要件を満たすことはできません。" }
+    ],
+    answer: ["A"]
+  },
+  {
+    id: 30,
+    question: "Cloud Kicksは、データエクスポートサービスを使用してバックアップによりデータを保護する予定です。エクスポートをスケジュールする際、管理者が留意すべき2つの考慮事項はどれですか？2つ選択してください。",
+    options: [
+      { key: "A", text: "メタデータのバックアップはSandboxの更新間隔に制限される。", exp: "Sandboxの更新間隔とメタデータのバックアップには直接的な関連性はありません。メタデータのバックアップを取得する場合は、別のツールを使用します。" },
+      { key: "B", text: "データのバックアップは週次または月次の間隔に制限される。", exp: "正解です。Salesforce標準のデータエクスポートサービスでは、組織のエディションに応じて週に1回（6日に1回）または月に1回（28日に1回）の頻度でデータのバックアップをスケジュールできます。" },
+      { key: "C", text: "データエクスポートサービスはSandboxから実行する必要がある。", exp: "データエクスポートサービスは、主に本番環境のデータをバックアップするために本番組織から実行されます。Sandboxから実行しなければならないという制限はありません。" },
+      { key: "D", text: "メタデータのバックアップは別のプロセスで実行する必要がある。", exp: "正解です。データエクスポートサービスはオブジェクトのレコードデータ（CSV）や添付ファイルなどをエクスポートする機能であり、組織のメタデータ（設定情報やカスタマイズ内容）は含まれません。メタデータをバックアップするには、メタデータAPIなど別のプロセスを利用する必要があります。" }
+    ],
+    answer: ["B", "D"]
+  },
+  {
+    id: 31,
+    question: "管理者が潜在的なセッションの脆弱性を特定して修正するために使用すべきツールはどれですか？",
+    options: [
+      { key: "A", text: "項目履歴管理", exp: "項目履歴管理は、レコード内の特定の項目の値がいつ、誰によって変更されたかを追跡するための機能です。セッションの脆弱性を特定するためのものではありません。" },
+      { key: "B", text: "設定変更履歴", exp: "設定変更履歴は、組織の設定に対して管理者やユーザーが行った過去の変更を追跡するためのツールです。誰がどのような設定変更を行ったかを確認することはできますが、システムの脆弱性を自動的に特定および修正する機能ではありません。" },
+      { key: "C", text: "セキュリティ状況チェック", exp: "正解です。セキュリティ状況チェック（セキュリティヘルスチェック）は、組織のセキュリティ設定（セッション設定、パスワードポリシー、ネットワークアクセスなど）を評価し、Salesforceが推奨する標準のベースラインと比較することで、潜在的な脆弱性を特定して修正を促すツールです。" },
+      { key: "D", text: "組織の共有設定", exp: "組織の共有設定は、各オブジェクトに対するユーザーのベースラインとなるレコードアクセス権（非公開、公開/参照のみなど）を定義するものです。レコードへのアクセスを制御する機能であり、セッションの脆弱性を特定するツールではありません。" }
+    ],
+    answer: ["C"]
+  },
+  {
+    id: 32,
+    question: "管理者がSalesforceオブジェクトを扱う際に留意すべき2つの考慮事項は何ですか？2つの回答を選択してください。",
+    options: [
+      { key: "A", text: "カスタムオブジェクトと標準オブジェクトには標準項目があります。", exp: "正解です。Salesforceでは、標準オブジェクトだけでなく、新しくカスタムオブジェクトを作成した際にも、ID、名前、所有者、作成者、最終更新者などの標準項目がシステムによって自動的に割り当てられます。" },
+      { key: "B", text: "標準オブジェクトはSalesforceに含まれています。", exp: "正解です。取引先、取引先責任者、商談などの標準オブジェクトは、Salesforce環境に最初から標準機能として組み込まれて提供されています。" },
+      { key: "C", text: "新しい標準オブジェクトを作成できます。", exp: "管理者が新しく作成できるのはカスタムオブジェクトのみです。標準オブジェクトはSalesforceによってあらかじめ定義されて提供されるため、ユーザーが独自に新しい標準オブジェクトを作成することはできません。" },
+      { key: "D", text: "標準オブジェクトのみが主従関係をサポートしています。", exp: "カスタムオブジェクトも主従関係をサポートしています。カスタムオブジェクトを、標準オブジェクトや他のカスタムオブジェクトの従（ディテール）側として設定し、主従関係を構築することが可能です。" }
+    ],
+    answer: ["A", "B"]
+  },
+  {
+    id: 33,
+    question: "Ursa Major Solarは、取引先レコードに2つの異なるページレイアウトを使用しています。一方のページレイアウトには顧客取引先に関連する項目が反映され、もう一方のページレイアウトにはパートナー取引先用の項目が含まれています。管理者は、顧客取引先のページレイアウトを営業ユーザーとサポートユーザーに割り当て、パートナー取引先のレイアウトをパートナー管理チームに割り当てました。この要件を満たすために、管理者は何を設定するべきですか？",
+    options: [
+      { key: "A", text: "公開グループと条件に基づく共有ルールを使用して、顧客取引先をパートナーチームと共有する。", exp: "共有ルールは特定のレコードに対するアクセス権（参照や更新）を他のユーザーに付与するための機能であり、プロファイルに応じて異なるページレイアウトを割り当てて表示を切り替える目的には使用されません。" },
+      { key: "B", text: "顧客取引先のデフォルトの取引先チームにパートナー管理チームのメンバーを追加する。", exp: "取引先チームは、特定の取引先レコードに対して共同作業を行うユーザーを管理し、アクセス権を拡張するための機能です。同じオブジェクトで複数のページレイアウトを出し分ける機能ではありません。" },
+      { key: "C", text: "パートナーチームのプロファイルで、顧客取引先に対する作成、参照、編集、および削除アクセス権を付与する。", exp: "プロファイルでオブジェクトレベルのアクセス権（CRUD権限）を付与することは重要ですが、それだけでは同じ取引先オブジェクト内で顧客用とパートナー用といった異なるビジネス要件に応じたページレイアウトを切り替えることはできません。" },
+      { key: "D", text: "顧客取引先用に1つのレコードタイプを作成し、パートナー取引先用に1つのレコードタイプを作成する。", exp: "正解です。レコードタイプを使用すると、異なるビジネスプロセス、選択リストの値、およびページレイアウトをユーザーに提供できます。顧客取引先とパートナー取引先にそれぞれレコードタイプを作成し、ユーザーのプロファイルごとに適切なページレイアウトを割り当てることで、要件を満たすことができます。" }
+    ],
+    answer: ["D"]
+  },
+  {
+    id: 34,
+    question: "AW Computingの管理者は、営業チームとマーケティングチーム向けのダッシュボードを作成する厳しい期限に直面しています。予算を増やさずに期限を守るために、管理者は何をするべきでしょうか？",
+    options: [
+      { key: "A", text: "営業チームとマーケティングチームの誰かにダッシュボードを構築するためのトレーニングを行う。", exp: "ユーザーにダッシュボード作成のトレーニングを行うことは長期的には有効ですが、学習と作成に時間がかかるため、現在の厳しい期限に間に合わせるための即効性のある解決策ではありません。" },
+      { key: "B", text: "簡単にカスタマイズできる構築済みのソリューションをAppExchangeで確認する。", exp: "正解です。AppExchangeには、Salesforce Labsなどが提供する無料のダッシュボードパッケージが多数公開されています。これらをインストールして自社の要件に合わせて微調整することで、予算を追加することなく、開発時間を大幅に短縮して期限に間に合わせることができます。" },
+      { key: "C", text: "カスタムダッシュボードを構築するためにコンサルタントを雇う。", exp: "外部の専門家であるコンサルタントを雇うことで迅速な構築は期待できますが、追加の費用が発生してしまうため、予算を増やさないという問題の条件を満たしません。" },
+      { key: "D", text: "期限を守るためにダッシュボードを手動で構築する。", exp: "レポートとダッシュボードをゼロからすべて手動で作成するには多大な時間と労力が必要となるため、厳しい期限に間に合わないリスクが高くなります。AppExchangeのテンプレートを活用する方が効率的です。" }
+    ],
+    answer: ["B"]
+  },
+  {
+    id: 35,
+    question: "Cloud Kicksの営業ユーザーは、取引先オブジェクトの業種項目のデータを商談のページレイアウトに表示することを求めています。これを達成するために、管理者はどのタイプの項目を作成する必要がありますか？",
+    options: [
+      { key: "A", text: "カスタム取引先項目", exp: "カスタム取引先項目は、取引先オブジェクトに固有のデータを保存するために作成する項目です。取引先オブジェクトに項目を作成するだけでは、その値を関連する商談オブジェクトのページレイアウトに表示させることはできません。" },
+      { key: "B", text: "標準取引先項目", exp: "標準取引先項目は、Salesforceに最初から用意されている取引先オブジェクトの項目です。既存の項目であっても、それを商談オブジェクトに表示するためには別の設定や項目が必要になるため、これを新たに作成するというのは要件を満たしません。" },
+      { key: "C", text: "クロスオブジェクト数式項目", exp: "正解です。クロスオブジェクト数式項目を作成することで、関連する親レコード（この場合は取引先）の項目の値を子レコード（この場合は商談）に動的に表示させることができます。これにより、商談のページレイアウト上で取引先の業種を直接確認できるようになります。" },
+      { key: "D", text: "主従関係項目", exp: "主従関係項目は、2つのオブジェクト間に密接な関係（親と子）を構築するための項目です。商談と取引先の間にはすでに標準の参照関係が存在しており、特定の項目の値を表示する目的のために主従関係項目を新たに作成するものではありません。"
